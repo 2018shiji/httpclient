@@ -1,19 +1,16 @@
-package com.example.client.httpclient;
+package com.example.client.httpclient.util;
 
 import com.alibaba.fastjson.JSON;
-import com.example.client.httpclient.pojo.ContainerFrontTail;
-import com.example.client.httpclient.pojo.ContainerStatus;
+import com.example.client.httpclient.pojo.responseParam.ContainerFrontTail;
+import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
 import com.example.client.httpclient.respHandler.PostJsonEntityRH;
 import com.google.common.io.CharStreams;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -21,16 +18,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * httpClient util: version(4.5.10)
  *
  */
 @Component
-public class HttpClientUtil {
+public class HttpClientUtilTest {
     private HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
     private CloseableHttpClient httpClient = httpClientBuilder.build();
 

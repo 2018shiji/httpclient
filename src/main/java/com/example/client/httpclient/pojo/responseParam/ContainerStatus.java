@@ -1,0 +1,15 @@
+package com.example.client.httpclient.pojo.responseParam;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
+
+@Data
+public class ContainerStatus {
+    //open 或者 close
+    @JSONField(name = "status")
+    String status;
+    @JSONField(name = "message")
+    String message;
+    @JSONField(name = "success")
+    boolean success;
+}
