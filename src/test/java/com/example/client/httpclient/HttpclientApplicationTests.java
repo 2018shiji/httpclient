@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class HttpclientApplicationTests {
@@ -88,41 +85,18 @@ class HttpclientApplicationTests {
     }
 
     @Test
-    void containerFrontTailMultiThreads() throws InterruptedException {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(6, 6, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    void containerFrontTailAsync(){
         long begin = System.currentTimeMillis();
-        for(int i = 0; i < 6; i++) {
-            threadPoolExecutor.execute(() -> {
-                System.out.println("Thread.id:" + Thread.currentThread().getId() + "time:" + System.currentTimeMillis()/1000.0);
-                List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTails();
-                System.out.println(containerFrontTails == null ? "null" : containerFrontTails.size());
-            });
-        }
-
-        while(threadPoolExecutor.getActiveCount()!=0){
-            Thread.sleep(20);
-        }
-        threadPoolExecutor.shutdown();
+        List<ContainerFrontTail> frontTailFutureAsync = container.getFrontTailFutureAsync();
+        System.out.println(frontTailFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
-
     }
 
     @Test
-    void containerStatusMultiThreads() throws InterruptedException {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(14, 14, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    void containerFrontTailAsyncT(){
         long begin = System.currentTimeMillis();
-        for(int i = 0; i < 14; i++) {
-            threadPoolExecutor.execute(() -> {
-                System.out.println("Thread.id:" + Thread.currentThread().getId() + "time:" + System.currentTimeMillis()/1000.0);
-                List<ContainerStatus> containerStatus = container.getContainerStatus();
-                System.out.println(containerStatus == null ? "null" : containerStatus.size());
-            });
-        }
-        threadPoolExecutor.shutdown();
-        while(!threadPoolExecutor.awaitTermination(100, TimeUnit.MILLISECONDS)){
-            Thread.sleep(100);
-        }
+        container.getFrontTailFutureAsyncT();
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
 
