@@ -5,7 +5,11 @@ import com.example.client.httpclient.pojo.responseParam.ContainerInfo;
 import com.example.client.httpclient.pojo.responseParam.ContainerRoofInfo;
 import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
 import com.example.client.httpclient.util.HttpClientUtilTest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -87,18 +91,53 @@ class HttpclientApplicationTests {
     @Test
     void containerFrontTailAsync(){
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> frontTailFutureAsync = container.getFrontTailFutureAsync();
+        List<ContainerFrontTail> frontTailFutureAsync = container.getFrontTailFutureMT();
         System.out.println(frontTailFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
     }
 
     @Test
-    void containerFrontTailAsyncT(){
+    void containerStatusAsync(){
         long begin = System.currentTimeMillis();
-        container.getFrontTailFutureAsyncT();
+        List<ContainerStatus> statusFutureAsync = container.getContainerStatusAsyncMT();
+        System.out.println(statusFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
+    }
+
+    @Test
+    void containerInfoAsync(){
+        long begin = System.currentTimeMillis();
+        List<ContainerInfo> infoFutureAsync = container.getContainerInfoAsyncMT();
+        System.out.println(infoFutureAsync);
+        long end = System.currentTimeMillis();
+        System.out.println("耗时：" + (end - begin)/1000.0 + "s");
+    }
+
+    @Test
+    void containerRoofInfoAsync(){
+        long begin = System.currentTimeMillis();
+        List<ContainerRoofInfo> roofInfoFutureAsync = container.getContainerRoofInfoAsyncMT();
+        System.out.println(roofInfoFutureAsync);
+        long end = System.currentTimeMillis();
+        System.out.println("耗时：" + (end - begin)/1000.0 + "s");
+    }
+
+    @Test
+    void test(){
+        StringEntity stringEntity =
+                new StringEntity("111", ContentType.create("UTF-8"));
+        StringEntity stringEntity1 =
+                new StringEntity("111", ContentType.create("UTF-8"));
+        System.out.println(stringEntity.equals(stringEntity1));
 
     }
+
+    @Test
+    void log(){
+        Logger logger = LoggerFactory.getLogger("Test");
+        logger.info("11111111");
+    }
+
 }

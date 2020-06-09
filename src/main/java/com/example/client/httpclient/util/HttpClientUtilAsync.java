@@ -3,6 +3,7 @@ package com.example.client.httpclient.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.client.httpclient.pojo.responseParam.ContainerFrontTail;
+import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
 import com.example.client.httpclient.respHandler.CallbackHandler;
 import com.example.client.httpclient.respHandler.CallbackHandlerT;
 import com.example.client.httpclient.respHandler.ResponseConsumer;
@@ -49,13 +50,13 @@ public class HttpClientUtilAsync {
     @PostConstruct
     public void initAsyncClient() throws IOReactorException {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(5000)
+                .setConnectTimeout(50000)
                 .setSocketTimeout(10000)
-                .setConnectionRequestTimeout(1000)
+                .setConnectionRequestTimeout(10000)
                 .build();
 
         IOReactorConfig ioReactorCfg = IOReactorConfig.custom()
-                .setIoThreadCount(2)
+                .setIoThreadCount(4)
                 .setSoKeepAlive(true)
                 .build();
 
@@ -77,7 +78,7 @@ public class HttpClientUtilAsync {
 
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
-                new StringEntity(base64Str, ContentType.create("UTF-8"));
+                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
         httpPost.setEntity(stringEntity);
         HttpAsyncRequestProducer requestProducer = HttpAsyncMethods.create(httpPost);
 
@@ -99,14 +100,14 @@ public class HttpClientUtilAsync {
     }
 
 
-    public Future<HttpResponse> getContainerFrontTailPost(String remoteUrl, String base64Str, CountDownLatch countDownLatch) {
+    public Future<HttpResponse> sendHttpRequestAsyncCallback(String remoteUrl, String base64Str, CountDownLatch countDownLatch) {
 
         Future<HttpResponse> responseFuture = null;
 
         HttpPost httpPost = new HttpPost(remoteUrl);
 
         StringEntity stringEntity =
-            new StringEntity(base64Str, ContentType.create("UTF-8"));
+                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
         httpPost.setEntity(stringEntity);
 
         callbackHandler.setCountDownLatch(countDownLatch);
@@ -121,5 +122,24 @@ public class HttpClientUtilAsync {
 
     }
 
+    public Future<HttpResponse> sendHttpRequestAsyncMultiThread(String remoteUrl, String base64Str) {
+
+        Future<HttpResponse> responseFuture = null;
+
+        HttpPost httpPost = new HttpPost(remoteUrl);
+
+        StringEntity stringEntity =
+                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
+        httpPost.setEntity(stringEntity);
+
+        long begin = System.currentTimeMillis();
+        System.out.println("------------before execute------------" +
+                new SimpleDateFormat("HH:mm:ss:SSS").format(Calendar.getInstance().getTime()));
+        responseFuture = asyncClient.execute(httpPost, null);
+        System.out.println("------------after execute------------" + (System.currentTimeMillis() - begin) / 1000.0);
+
+        return responseFuture;
+
+    }
 
 }
