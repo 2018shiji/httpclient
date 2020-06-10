@@ -28,7 +28,10 @@ public class ContainerThread implements Callable<String> {
             contentStr = CharStreams.toString(new InputStreamReader(content));
             System.out.println("//////////////////////    " + contentStr);
             countDownLatch.countDown();
-        }catch(Exception e) {e.printStackTrace();}
+        }catch(Exception e) {
+            countDownLatch.countDown();
+            e.printStackTrace();
+        }
         return contentStr;
     }
 }
