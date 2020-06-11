@@ -33,7 +33,7 @@ public class Container {
     private BlockingQueue<String> containerInfoStrings = new LinkedBlockingQueue<String>();
     private BlockingQueue<String> containerInfoRoofStrings = new LinkedBlockingQueue<String>();
     public static final String CONTAINER_FRONT_TAIL = "https://zsg-serving.cloudwalk.cn:8081/container_front_tail";
-    public static final String CONTAINER_STATUS = "https://zsg-serving.cloudwalk.cn:8080/container_status";
+    public static final String CONTAINER_STATUS = "https://zsg-serving.cloudwalk.cn:8082/container_status";
     public static final String CONTAINER_INFO = "https://zsg-serving.cloudwalk.cn:8082/container_info";
     public static final String IMAGE_FILE_PATH = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片";
     public static final String IMAGE_FILE_PATH_TEST = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片base64Test";
@@ -42,31 +42,21 @@ public class Container {
 
     public Logger logger = LoggerFactory.getLogger(Container.class);
 
-    @PostConstruct//todo 文件夹中的文件夹
-    private void initContainer() throws IOException {
-        File image = new File(IMAGE_FILE_PATH_TEST);
-        if(image.isDirectory()){
-            String[] files = image.list();
-            for(int i = 0; i < files.length; i++){
-                File imageFile = new File(IMAGE_FILE_PATH_TEST + "/" + files[i]);
-
-                initBlockingQueues(imageFile);
-            }
-        }else{ initBlockingQueues(image); }
-
-    }
 
     /** 一请求一响应完全阻塞版 */
     public List<ContainerFrontTail> getContainerFrontTails(){
+        initContainer();
         List<ContainerFrontTail> results = new ArrayList<>();
         try{
             int i = 0;
             while(true) {
                 String imageStr = imageBase64Strings.take();
-                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost("http://127.0.0.1:8080/doHttpClientPost", imageStr);
-//                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost(CONTAINER_FRONT_TAIL, imageStr);
+//                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost("http://127.0.0.1:8082/doFrontTailPostJson", imageStr);
+                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost(CONTAINER_FRONT_TAIL, imageStr);
+                String fileName = fileNames.get(i++);
+                frontTailPost.setFileName(fileName);
                 results.add(frontTailPost);
-                logger.info(fileNames.get(i++) + "------->" + frontTailPost.toString());
+                logger.info(fileName + "------->" + frontTailPost.toString());
                 if(imageBase64Strings.isEmpty())break;
             }
         } catch (InterruptedException e){e.printStackTrace();}
@@ -75,47 +65,53 @@ public class Container {
     }
 
     public List<ContainerStatus> getContainerStatus(){
+        initContainer();
         List<ContainerStatus> results = new ArrayList<>();
         try{
             int i = 0;
             while(true) {
                 String imageStr = imageBase64Strings.take();
-//                ContainerStatus statusPost = httpClient.getContainerStatusPost("http://127.0.0.1:8080/doHttpClientPost", imageStr);
                 ContainerStatus statusPost = httpClient.getContainerStatusPost(CONTAINER_STATUS, imageStr);
+                String fileName = fileNames.get(i++);
+                statusPost.setFileName(fileName);
                 results.add(statusPost);
-                logger.info(fileNames.get(i++) + "------->" + statusPost.toString());
+                System.out.println(fileName + "------->" + statusPost.toString());
                 if (imageBase64Strings.isEmpty()) break;
             }
         } catch (InterruptedException e){e.printStackTrace();}
         return results;
     }
 
-    public List<ContainerInfo> getContainerInfo(){
+    public List<ContainerInfo> getContainerInfos(){
+        initContainer();
         List<ContainerInfo> results = new ArrayList<>();
         try{
             int i = 0;
             while(true) {
                 String infoStr = containerInfoStrings.take();
-//                ContainerInfo infoPost = httpClient.getContainerStatusPost("http://127.0.0.1:8080/doHttpClientPost", infoStr);
                 ContainerInfo infoPost = httpClient.getContainerInfoPost(CONTAINER_INFO, infoStr);
+                String fileName = fileNames.get(i++);
+                infoPost.setFileName(fileName);
                 results.add(infoPost);
-                logger.info(fileNames.get(i++) + "------->" + infoPost.toString());
+                logger.info(fileName + "------->" + infoPost.toString());
                 if (containerInfoStrings.isEmpty()) break;
             }
         } catch (InterruptedException e){e.printStackTrace();}
         return results;
     }
 
-    public List<ContainerRoofInfo> getContainerRoofInfo(){
+    public List<ContainerRoofInfo> getContainerRoofInfos(){
+        initContainer();
         List<ContainerRoofInfo> results = new ArrayList<>();
         try{
             int i = 0;
             while(true) {
                 String roofInfoStr = containerInfoRoofStrings.take();
-//                ContainerRoofInfo roofInfoPost = httpClient.getContainerRoofInfoPost("http://127.0.0.1:8080/doHttpClientPost", roofInfoStr);
                 ContainerRoofInfo roofInfoPost = httpClient.getContainerRoofInfoPost(CONTAINER_INFO, roofInfoStr);
+                String fileName = fileNames.get(i++);
+                roofInfoPost.setFileName(fileName);
                 results.add(roofInfoPost);
-                logger.info(fileNames.get(i++) + "------->" + roofInfoPost.toString());
+                logger.info(fileName + "------->" + roofInfoPost.toString());
                 if (containerInfoRoofStrings.isEmpty()) break;
             }
         } catch (InterruptedException e){e.printStackTrace();}
@@ -124,7 +120,8 @@ public class Container {
 
     /** 异步回调无序版，需client，server两端定义好序列号serialNumber实现顺序 */
     public List<ContainerFrontTail> getFrontTailFutureAsync() {
-        sendRequestAsyncCallback("http://127.0.0.1:8080/doHttpClientPost");
+        initContainer();
+        sendRequestAsyncCallback("http://127.0.0.1:8082/doFrontTailPostJson");
 //        sendRequestAsync(CONTAINER_FRONT_TAIL);
 
         List<ContainerFrontTail> frontTails = new ArrayList<>();
@@ -143,9 +140,10 @@ public class Container {
 
     /** 异步线程池多任务提交版， 任务的提交顺序与Future列表存在顺序对应关系，故有序。*/
     public List<ContainerFrontTail> getFrontTailFutureMT() {
+        initContainer();
         List<ContainerFrontTail> frontTails = new ArrayList<>();
-        List<String> frontTailStrings = sendRequestAsyncMultiThread("http://127.0.0.1:8080/doHttpClientPost", imageBase64Strings);
-//        List<String> frontTailStrings = sendRequestAsyncMultiThread(CONTAINER_FRONT_TAIL, imageBase64Strings);
+        List<String> frontTailStrings = sendRequestAsyncMultiThread(CONTAINER_FRONT_TAIL, imageBase64Strings);
+//        List<String> frontTailStrings = sendRequestAsyncMultiThread("http://127.0.0.1:8082/doFrontTailPostJson", imageBase64Strings);
         try{
             int j = 0;
             for(int i = 0; i < frontTailStrings.size(); i++){
@@ -153,7 +151,9 @@ public class Container {
                 System.out.println("+++++++++++++++++++++++" + resultStr);
                 JSONObject jsonObject = JSON.parseObject(resultStr);
                 ContainerFrontTail containerFrontTail = JSON.toJavaObject(jsonObject, ContainerFrontTail.class);
-                logger.info(fileNames.get(j++) + "------->" + containerFrontTail.toString());
+                String fileName = fileNames.get(j++);
+                containerFrontTail.setFileName(fileName);
+                logger.info(fileName + "------->" + containerFrontTail.toString());
                 frontTails.add(containerFrontTail);
             }
         } catch (Exception e){e.printStackTrace();}
@@ -162,7 +162,7 @@ public class Container {
     }
 
     public List<ContainerStatus> getContainerStatusAsyncMT(){
-//        List<String> statusStrings = sendRequestAsyncMultiThread("http://127.0.0.1:8080/doHttpClientPost");
+        initContainer();
         List<String> statusStrings = sendRequestAsyncMultiThread(CONTAINER_STATUS, imageBase64Strings);
 
         List<ContainerStatus> statuses = new ArrayList<>();
@@ -173,7 +173,9 @@ public class Container {
                 System.out.println("+++++++++++++++++++++++" + resultStr);
                 JSONObject jsonObject = JSON.parseObject(resultStr);
                 ContainerStatus containerStatus = JSON.toJavaObject(jsonObject, ContainerStatus.class);
-                logger.info(fileNames.get(j++) + "------->" + containerStatus.toString());
+                String fileName = fileNames.get(j++);
+                containerStatus.setFileName(fileName);
+                logger.info(fileName + "------->" + containerStatus.toString());
                 statuses.add(containerStatus);
             }
         } catch (Exception e){e.printStackTrace();}
@@ -182,6 +184,7 @@ public class Container {
     }
 
     public List<ContainerInfo> getContainerInfoAsyncMT(){
+        initContainer();
         List<ContainerInfo> infos = new ArrayList<>();
         List<String> infoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoStrings);
         try{
@@ -191,7 +194,9 @@ public class Container {
                 System.out.println("+++++++++++++++++++++++" + resultStr);
                 JSONObject jsonObject = JSON.parseObject(resultStr);
                 ContainerInfo containerInfo = JSON.toJavaObject(jsonObject, ContainerInfo.class);
-                logger.info(fileNames.get(j++) + "------->" + containerInfo.toString());
+                String fileName = fileNames.get(j++);
+                containerInfo.setFileName(fileName);
+                logger.info(fileName + "------->" + containerInfo.toString());
                 infos.add(containerInfo);
             }
         } catch (Exception e){e.printStackTrace();}
@@ -200,6 +205,7 @@ public class Container {
     }
 
     public List<ContainerRoofInfo> getContainerRoofInfoAsyncMT(){
+        initContainer();
         List<ContainerRoofInfo> roofInfos = new ArrayList<>();
         List<String> roofInfoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoRoofStrings);
         try{
@@ -209,7 +215,9 @@ public class Container {
                 System.out.println("+++++++++++++++++++++++" + resultStr);
                 JSONObject jsonObject = JSON.parseObject(resultStr);
                 ContainerRoofInfo containerRoofInfo = JSON.toJavaObject(jsonObject, ContainerRoofInfo.class);
-                logger.info(fileNames.get(j++) + "------->" + containerRoofInfo.toString());
+                String fileName = fileNames.get(j++);
+                containerRoofInfo.setFileName(fileName);
+                logger.info(fileName + "------->" + containerRoofInfo.toString());
                 roofInfos.add(containerRoofInfo);
             }
         } catch (Exception e){e.printStackTrace();}
@@ -220,7 +228,7 @@ public class Container {
     private void sendRequestAsyncCallback(String remoteUrl){
         try {
             CountDownLatch countDownLatch = new CountDownLatch(imageBase64Strings.size());
-            asyncClient.getAsyncClient().start();
+            asyncClient.start();
             while (true) {
                 String imageStr = imageBase64Strings.take();
                 asyncClient.sendHttpRequestAsyncCallback(remoteUrl, imageStr, countDownLatch);
@@ -230,9 +238,7 @@ public class Container {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            try {
-                asyncClient.getAsyncClient().close();
-            } catch (IOException e) { e.printStackTrace(); }
+            asyncClient.close();
         }
     }
 
@@ -240,7 +246,7 @@ public class Container {
         List<String> results = new ArrayList<>();
         try {
             CountDownLatch countDownLatch = new CountDownLatch(requestStrings.size());
-            asyncClient.getAsyncClient().start();
+            asyncClient.start();
             ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
             List<Callable<String>> responseCalls = new ArrayList<>();
             while (true) {
@@ -251,7 +257,7 @@ public class Container {
                 if (requestStrings.isEmpty()) break;
             }
 
-            List<Future<String>> futures = singleThreadExecutor.invokeAll(responseCalls, 20, TimeUnit.SECONDS);
+            List<Future<String>> futures = singleThreadExecutor.invokeAll(responseCalls, 60, TimeUnit.SECONDS);
             for(int i = 0; i < futures.size(); i++){
                 try {
                     String s = futures.get(i).get();
@@ -263,11 +269,22 @@ public class Container {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            try {
-                asyncClient.getAsyncClient().close();
-            } catch (IOException e) { e.printStackTrace(); }
+            asyncClient.close();
         }
         return results;
+    }
+
+    private void initContainer() {
+        File image = new File(IMAGE_FILE_PATH_TEST);
+        if(image.isDirectory()){
+            String[] files = image.list();
+            for(int i = 0; i < files.length; i++){
+                File imageFile = new File(IMAGE_FILE_PATH_TEST + "/" + files[i]);
+
+                initBlockingQueues(imageFile);
+            }
+        }else{ initBlockingQueues(image); }
+
     }
 
     private void initBlockingQueues(File imageFile){

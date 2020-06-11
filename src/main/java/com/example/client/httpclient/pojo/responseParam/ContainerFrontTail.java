@@ -15,4 +15,7 @@ public class ContainerFrontTail {
     @JSONField(name = "success")
     boolean success;
 
+    @JSONField(name = "file_name")
+    String fileName;
+
 }

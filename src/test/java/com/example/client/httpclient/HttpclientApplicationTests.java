@@ -64,7 +64,7 @@ class HttpclientApplicationTests {
     @Test
     void containerInfo(){
         long begin = System.currentTimeMillis();
-        List<ContainerInfo> containerInfos = container.getContainerInfo();
+        List<ContainerInfo> containerInfos = container.getContainerInfos();
         System.out.println(containerInfos == null ? "null":containerInfos.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -73,7 +73,7 @@ class HttpclientApplicationTests {
     @Test
     void containerRoofInfo(){
         long begin = System.currentTimeMillis();
-        List<ContainerRoofInfo> containerRoofInfos = container.getContainerRoofInfo();
+        List<ContainerRoofInfo> containerRoofInfos = container.getContainerRoofInfos();
         System.out.println(containerRoofInfos == null ? "null":containerRoofInfos.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");

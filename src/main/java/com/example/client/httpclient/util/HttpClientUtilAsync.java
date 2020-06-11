@@ -44,15 +44,14 @@ import java.util.concurrent.Future;
 
 @Component
 public class HttpClientUtilAsync {
-    @Getter private CloseableHttpAsyncClient asyncClient;
+    private CloseableHttpAsyncClient asyncClient;
     @Getter private CallbackHandler callbackHandler = new CallbackHandler();
 
-    @PostConstruct
-    public void initAsyncClient() throws IOReactorException {
+    private void initAsyncClient() throws IOReactorException {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(50000)
-                .setSocketTimeout(10000)
-                .setConnectionRequestTimeout(10000)
+                .setConnectTimeout(60000)
+                .setSocketTimeout(30000)
+                .setConnectionRequestTimeout(30000)
                 .build();
 
         IOReactorConfig ioReactorCfg = IOReactorConfig.custom()
@@ -140,6 +139,19 @@ public class HttpClientUtilAsync {
 
         return responseFuture;
 
+    }
+
+    public void start(){
+        try {
+            initAsyncClient();
+        }catch (IOReactorException e){e.printStackTrace();}
+        this.asyncClient.start();
+    }
+
+    public void close(){
+        try{
+            this.asyncClient.close();
+        } catch (IOException e){e.printStackTrace();}
     }
 
 }

@@ -16,4 +16,7 @@ public class ContainerInfo {
     @JSONField(name = "success")
     private boolean success;
 
+    @JSONField(name = "file_name")
+    String fileName;
+
 }

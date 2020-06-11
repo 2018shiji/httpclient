@@ -13,4 +13,6 @@ public class ContainerRoofInfo {
     private String roofNum;
     @JSONField(name = "success")
     private boolean success;
+    @JSONField(name = "file_name")
+    String fileName;
 }
