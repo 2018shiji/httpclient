@@ -18,6 +18,9 @@ import java.util.List;
 @SpringBootTest
 class HttpclientApplicationTests {
 
+    public static final String IMAGE_FILE_PATH = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片";
+    public static final String IMAGE_FILE_PATH_TEST = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片base64Test";
+
     @Autowired
     HttpClientUtilTest httpClientUtilTest;
 
@@ -55,7 +58,7 @@ class HttpclientApplicationTests {
     @Test
     void containerFrontTail(){
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTails();
+        List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTails(IMAGE_FILE_PATH_TEST);
         System.out.println(containerFrontTails == null ? "null":containerFrontTails.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -64,7 +67,7 @@ class HttpclientApplicationTests {
     @Test
     void containerInfo(){
         long begin = System.currentTimeMillis();
-        List<ContainerInfo> containerInfos = container.getContainerInfos();
+        List<ContainerInfo> containerInfos = container.getContainerInfos(IMAGE_FILE_PATH_TEST);
         System.out.println(containerInfos == null ? "null":containerInfos.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -73,7 +76,7 @@ class HttpclientApplicationTests {
     @Test
     void containerRoofInfo(){
         long begin = System.currentTimeMillis();
-        List<ContainerRoofInfo> containerRoofInfos = container.getContainerRoofInfos();
+        List<ContainerRoofInfo> containerRoofInfos = container.getContainerRoofInfos(IMAGE_FILE_PATH_TEST);
         System.out.println(containerRoofInfos == null ? "null":containerRoofInfos.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -82,7 +85,7 @@ class HttpclientApplicationTests {
     @Test
     void containerStatus(){
         long begin = System.currentTimeMillis();
-        List<ContainerStatus> containerStatus = container.getContainerStatus();
+        List<ContainerStatus> containerStatus = container.getContainerStatus(IMAGE_FILE_PATH_TEST);
         System.out.println(containerStatus == null ? "null":containerStatus.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -91,7 +94,7 @@ class HttpclientApplicationTests {
     @Test
     void containerFrontTailAsync(){
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> frontTailFutureAsync = container.getFrontTailFutureMT();
+        List<ContainerFrontTail> frontTailFutureAsync = container.getFrontTailFutureMT(IMAGE_FILE_PATH_TEST);
         System.out.println(frontTailFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -100,7 +103,7 @@ class HttpclientApplicationTests {
     @Test
     void containerStatusAsync(){
         long begin = System.currentTimeMillis();
-        List<ContainerStatus> statusFutureAsync = container.getContainerStatusAsyncMT();
+        List<ContainerStatus> statusFutureAsync = container.getContainerStatusAsyncMT(IMAGE_FILE_PATH_TEST);
         System.out.println(statusFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -109,7 +112,7 @@ class HttpclientApplicationTests {
     @Test
     void containerInfoAsync(){
         long begin = System.currentTimeMillis();
-        List<ContainerInfo> infoFutureAsync = container.getContainerInfoAsyncMT();
+        List<ContainerInfo> infoFutureAsync = container.getContainerInfoAsyncMT(IMAGE_FILE_PATH_TEST);
         System.out.println(infoFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -118,7 +121,7 @@ class HttpclientApplicationTests {
     @Test
     void containerRoofInfoAsync(){
         long begin = System.currentTimeMillis();
-        List<ContainerRoofInfo> roofInfoFutureAsync = container.getContainerRoofInfoAsyncMT();
+        List<ContainerRoofInfo> roofInfoFutureAsync = container.getContainerRoofInfoAsyncMT(IMAGE_FILE_PATH_TEST);
         System.out.println(roofInfoFutureAsync);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");

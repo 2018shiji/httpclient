@@ -35,8 +35,7 @@ public class Container {
     public static final String CONTAINER_FRONT_TAIL = "https://zsg-serving.cloudwalk.cn:8081/container_front_tail";
     public static final String CONTAINER_STATUS = "https://zsg-serving.cloudwalk.cn:8082/container_status";
     public static final String CONTAINER_INFO = "https://zsg-serving.cloudwalk.cn:8082/container_info";
-    public static final String IMAGE_FILE_PATH = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片";
-    public static final String IMAGE_FILE_PATH_TEST = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片base64Test";
+
 
     private List<String> fileNames = new ArrayList();
 
@@ -44,15 +43,15 @@ public class Container {
 
 
     /** 一请求一响应完全阻塞版 */
-    public List<ContainerFrontTail> getContainerFrontTails(){
-        initContainer();
+    public List<ContainerFrontTail> getContainerFrontTails(String imageUri){
+        initContainer(imageUri);
         List<ContainerFrontTail> results = new ArrayList<>();
         try{
             int i = 0;
             while(true) {
                 String imageStr = imageBase64Strings.take();
-//                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost("http://127.0.0.1:8082/doFrontTailPostJson", imageStr);
-                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost(CONTAINER_FRONT_TAIL, imageStr);
+                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost("http://127.0.0.1:8082/doFrontTailPostJson", imageStr);
+//                ContainerFrontTail frontTailPost = httpClient.getContainerFrontTailPost(CONTAINER_FRONT_TAIL, imageStr);
                 String fileName = fileNames.get(i++);
                 frontTailPost.setFileName(fileName);
                 results.add(frontTailPost);
@@ -64,8 +63,8 @@ public class Container {
         return results;
     }
 
-    public List<ContainerStatus> getContainerStatus(){
-        initContainer();
+    public List<ContainerStatus> getContainerStatus(String imageUri){
+        initContainer(imageUri);
         List<ContainerStatus> results = new ArrayList<>();
         try{
             int i = 0;
@@ -82,8 +81,8 @@ public class Container {
         return results;
     }
 
-    public List<ContainerInfo> getContainerInfos(){
-        initContainer();
+    public List<ContainerInfo> getContainerInfos(String imageUri){
+        initContainer(imageUri);
         List<ContainerInfo> results = new ArrayList<>();
         try{
             int i = 0;
@@ -100,8 +99,8 @@ public class Container {
         return results;
     }
 
-    public List<ContainerRoofInfo> getContainerRoofInfos(){
-        initContainer();
+    public List<ContainerRoofInfo> getContainerRoofInfos(String imageUri){
+        initContainer(imageUri);
         List<ContainerRoofInfo> results = new ArrayList<>();
         try{
             int i = 0;
@@ -119,8 +118,8 @@ public class Container {
     }
 
     /** 异步回调无序版，需client，server两端定义好序列号serialNumber实现顺序 */
-    public List<ContainerFrontTail> getFrontTailFutureAsync() {
-        initContainer();
+    public List<ContainerFrontTail> getFrontTailFutureAsync(String imageUri) {
+        initContainer(imageUri);
         sendRequestAsyncCallback("http://127.0.0.1:8082/doFrontTailPostJson");
 //        sendRequestAsync(CONTAINER_FRONT_TAIL);
 
@@ -139,8 +138,8 @@ public class Container {
     }
 
     /** 异步线程池多任务提交版， 任务的提交顺序与Future列表存在顺序对应关系，故有序。*/
-    public List<ContainerFrontTail> getFrontTailFutureMT() {
-        initContainer();
+    public List<ContainerFrontTail> getFrontTailFutureMT(String imageUri) {
+        initContainer(imageUri);
         List<ContainerFrontTail> frontTails = new ArrayList<>();
         List<String> frontTailStrings = sendRequestAsyncMultiThread(CONTAINER_FRONT_TAIL, imageBase64Strings);
 //        List<String> frontTailStrings = sendRequestAsyncMultiThread("http://127.0.0.1:8082/doFrontTailPostJson", imageBase64Strings);
@@ -161,8 +160,8 @@ public class Container {
         return frontTails;
     }
 
-    public List<ContainerStatus> getContainerStatusAsyncMT(){
-        initContainer();
+    public List<ContainerStatus> getContainerStatusAsyncMT(String imageUri){
+        initContainer(imageUri);
         List<String> statusStrings = sendRequestAsyncMultiThread(CONTAINER_STATUS, imageBase64Strings);
 
         List<ContainerStatus> statuses = new ArrayList<>();
@@ -183,8 +182,8 @@ public class Container {
         return statuses;
     }
 
-    public List<ContainerInfo> getContainerInfoAsyncMT(){
-        initContainer();
+    public List<ContainerInfo> getContainerInfoAsyncMT(String imageUri){
+        initContainer(imageUri);
         List<ContainerInfo> infos = new ArrayList<>();
         List<String> infoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoStrings);
         try{
@@ -204,8 +203,8 @@ public class Container {
         return infos;
     }
 
-    public List<ContainerRoofInfo> getContainerRoofInfoAsyncMT(){
-        initContainer();
+    public List<ContainerRoofInfo> getContainerRoofInfoAsyncMT(String imageUri){
+        initContainer(imageUri);
         List<ContainerRoofInfo> roofInfos = new ArrayList<>();
         List<String> roofInfoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoRoofStrings);
         try{
@@ -274,12 +273,13 @@ public class Container {
         return results;
     }
 
-    private void initContainer() {
-        File image = new File(IMAGE_FILE_PATH_TEST);
+    private void initContainer(String imageUri) {
+        clearCollections();
+        File image = new File(imageUri);
         if(image.isDirectory()){
             String[] files = image.list();
             for(int i = 0; i < files.length; i++){
-                File imageFile = new File(IMAGE_FILE_PATH_TEST + "/" + files[i]);
+                File imageFile = new File(imageUri + "/" + files[i]);
 
                 initBlockingQueues(imageFile);
             }
@@ -318,4 +318,10 @@ public class Container {
 //                imageStrs.add("{\n" + "\"image\":" + "\"" + base64Str + "\"" + "\n}");
     }
 
+    private void clearCollections(){
+        this.fileNames.clear();
+        this.imageBase64Strings.clear();
+        this.containerInfoStrings.clear();
+        this.containerInfoRoofStrings.clear();
+    }
 }
