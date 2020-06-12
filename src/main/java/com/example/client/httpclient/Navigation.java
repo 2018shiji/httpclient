@@ -40,6 +40,7 @@ public class Navigation {
     }
 
 
+
     @ResponseBody
     @RequestMapping("getStatusesAsync")
     public String doGetStatusesAsync(String imageUri){
