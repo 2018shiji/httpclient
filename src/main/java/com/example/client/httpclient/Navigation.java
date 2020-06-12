@@ -39,8 +39,6 @@ public class Navigation {
         return JSON.toJSONString(statuses);
     }
 
-
-
     @ResponseBody
     @RequestMapping("getStatusesAsync")
     public String doGetStatusesAsync(String imageUri){
