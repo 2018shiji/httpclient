@@ -1,4 +1,4 @@
-package com.example.client.httpclient.pojo.responseParam;
+package com.example.client.httpclient.pojo.response;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
@@ -6,14 +6,13 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ContainerStatus {
-    //open 或者 close
-    @JSONField(name = "status")
-    String status;
+public class ContainerRoofInfo {
     @JSONField(name = "message")
-    String message;
+    private String message;
+    @JSONField(name = "roof_num")
+    private String roofNum;
     @JSONField(name = "success")
-    boolean success;
+    private boolean success;
     @JSONField(name = "file_name")
     String fileName;
 }

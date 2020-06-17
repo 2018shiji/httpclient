@@ -1,10 +1,13 @@
 package com.example.client.httpclient;
 
 import com.alibaba.fastjson.JSON;
-import com.example.client.httpclient.pojo.responseParam.ContainerFrontTail;
-import com.example.client.httpclient.pojo.responseParam.ContainerInfo;
-import com.example.client.httpclient.pojo.responseParam.ContainerRoofInfo;
-import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
+import com.example.client.httpclient.containerImp.AsyncOrderedContainer;
+import com.example.client.httpclient.containerImp.BlockedContainer;
+import com.example.client.httpclient.pojo.response.ContainerFrontTail;
+import com.example.client.httpclient.pojo.response.ContainerInfo;
+import com.example.client.httpclient.pojo.response.ContainerRoofInfo;
+import com.example.client.httpclient.pojo.response.ContainerStatus;
+import com.example.client.httpclient.util.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,25 +15,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class Navigation {
-    @Autowired
-    Container container;
     Logger logger = LoggerFactory.getLogger(Navigation.class);
 
     @ResponseBody
     @RequestMapping("getStatuses")
     public String doGetStatuses(String imageUri){
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerStatus> statuses = container.getContainerStatus(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerStatus> statuses = container.getContainerStatuses(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
 
@@ -42,8 +45,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getStatusesAsync")
     public String doGetStatusesAsync(String imageUri){
+        IContainer container = SpringUtil.getBean(AsyncOrderedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerStatus> result = container.getContainerStatusAsyncMT(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerStatus> result = container.getContainerStatuses(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
@@ -55,8 +60,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("get")
     public String doGetFrontTails(String imageUri){
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> result = container.getContainerFrontTails(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerFrontTail> result = container.getContainerFrontTails(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
@@ -67,16 +74,9 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getFrontTails")
     public String doPostFrontTails(@RequestParam MultipartFile[] files){
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         System.out.println(files);
-        //todo 如果存在则清空
-        String filePath = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\destination\\";
-        try {
-            for(int i = 0; i < files.length; i++) {
-                String fileName = files[i].getOriginalFilename();
-                File destination = new File(filePath + fileName);
-                files[i].transferTo(destination);
-            }
-        } catch (IOException e) { e.printStackTrace(); }
+        String filePath = getImageFileUri(files);
 
         List<ContainerFrontTail> result = container.getContainerFrontTails(filePath);
         System.out.println(JSON.toJSONString(result));
@@ -87,8 +87,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getFrontTailsAsync")
     public String doGetFrontTailsAsync(String imageUri){
+        IContainer container = SpringUtil.getBean(AsyncOrderedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> result = container.getFrontTailFutureMT(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerFrontTail> result = container.getContainerFrontTails(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
@@ -99,8 +101,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getInfos")
     public String doGetContainerInfos(String imageUri){
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerInfo> infos = container.getContainerInfos(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerInfo> infos = container.getContainerInfos(filePath);
         System.out.println(JSON.toJSONString(infos));
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -111,8 +115,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getInfosAsync")
     public String doGetInfosAsync(String imageUri){
+        IContainer container = SpringUtil.getBean(AsyncOrderedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerInfo> result = container.getContainerInfoAsyncMT(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerInfo> result = container.getContainerInfos(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
@@ -124,8 +130,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getRoofInfos")
     public String doGetContainerRoofInfos(String imageUri){
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerRoofInfo> roofInfos = container.getContainerRoofInfos(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerRoofInfo> roofInfos = container.getContainerRoofInfos(filePath);
         System.out.println(JSON.toJSONString(roofInfos));
         logger.info(JSON.toJSONString(roofInfos));
 
@@ -138,8 +146,10 @@ public class Navigation {
     @ResponseBody
     @RequestMapping("getRoofInfosAsync")
     public String doGetRoofInfosAsync(String imageUri){
+        IContainer container = SpringUtil.getBean(AsyncOrderedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerRoofInfo> result = container.getContainerRoofInfoAsyncMT(formatImageUri(imageUri));
+        String filePath = formatImageUri(imageUri);
+        List<ContainerRoofInfo> result = container.getContainerRoofInfos(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
@@ -156,5 +166,25 @@ public class Navigation {
         File file = new File(imageUriT);
         System.out.println(file.isDirectory() + file.getName() + file.list());
         return imageUriT;
+    }
+
+    private String getImageFileUri(MultipartFile[] files){
+        String filePath = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\destination\\";
+        try {
+            File directory = new File(filePath);
+            if(!directory.exists()){
+                directory.mkdir();
+            }
+            for(String name : directory.list()){
+                File temp = new File(filePath + name);
+                temp.delete();
+            }
+            for(int i = 0; i < files.length; i++) {
+                String fileName = files[i].getOriginalFilename();
+                File destination = new File(filePath + fileName);
+                files[i].transferTo(destination);
+            }
+        } catch (IOException e) { e.printStackTrace(); }
+        return filePath;
     }
 }

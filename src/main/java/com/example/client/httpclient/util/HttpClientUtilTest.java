@@ -1,8 +1,8 @@
 package com.example.client.httpclient.util;
 
 import com.alibaba.fastjson.JSON;
-import com.example.client.httpclient.pojo.responseParam.ContainerFrontTail;
-import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
+import com.example.client.httpclient.pojo.response.ContainerFrontTail;
+import com.example.client.httpclient.pojo.response.ContainerStatus;
 import com.example.client.httpclient.respHandler.PostJsonEntityRH;
 import com.google.common.io.CharStreams;
 import org.apache.http.client.methods.*;

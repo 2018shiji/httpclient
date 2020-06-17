@@ -1,15 +1,14 @@
 package com.example.client.httpclient.util;
 
-import com.example.client.httpclient.pojo.responseParam.ContainerFrontTail;
-import com.example.client.httpclient.pojo.responseParam.ContainerInfo;
-import com.example.client.httpclient.pojo.responseParam.ContainerRoofInfo;
-import com.example.client.httpclient.pojo.responseParam.ContainerStatus;
+import com.example.client.httpclient.pojo.response.ContainerFrontTail;
+import com.example.client.httpclient.pojo.response.ContainerInfo;
+import com.example.client.httpclient.pojo.response.ContainerRoofInfo;
+import com.example.client.httpclient.pojo.response.ContainerStatus;
 import com.example.client.httpclient.respHandler.PostJsonEntityRH;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,10 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 @Component
-public class HttpClientUtil {
-    private CloseableHttpClient httpClient = HttpClients.createDefault();
+public class HttpClientUtilBlock {
 
-    public ContainerFrontTail getContainerFrontTailPost(String remoteUrl, String base64Str) {
+
+    public ContainerFrontTail getContainerFrontTailPost(String remoteUrl, String base64Str, CloseableHttpClient httpClient) {
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
                 new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
@@ -41,7 +40,7 @@ public class HttpClientUtil {
         return frontTail;
     }
 
-    public ContainerStatus getContainerStatusPost(String remoteUrl, String base64Str) {
+    public ContainerStatus getContainerStatusPost(String remoteUrl, String base64Str, CloseableHttpClient httpClient) {
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
                 new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
@@ -62,7 +61,7 @@ public class HttpClientUtil {
         return status;
     }
 
-    public ContainerInfo getContainerInfoPost(String remoteUrl, String base64Str) {
+    public ContainerInfo getContainerInfoPost(String remoteUrl, String base64Str, CloseableHttpClient httpClient) {
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
                 new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
@@ -83,7 +82,7 @@ public class HttpClientUtil {
         return info;
     }
 
-    public ContainerRoofInfo getContainerRoofInfoPost(String remoteUrl, String base64Str) {
+    public ContainerRoofInfo getContainerRoofInfoPost(String remoteUrl, String base64Str, CloseableHttpClient httpClient) {
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
                 new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
@@ -104,15 +103,5 @@ public class HttpClientUtil {
         return roofInfo;
     }
 
-
-    public boolean closeHttpClient(){
-        try {
-            httpClient.close();
-        }catch(IOException e){
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
 }

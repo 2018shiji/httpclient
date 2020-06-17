@@ -1,4 +1,4 @@
-package com.example.client.httpclient.pojo.responseParam;
+package com.example.client.httpclient.pojo.response;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
