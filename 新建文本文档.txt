@@ -1,2 +1,7 @@
 Ubuntu安装时没注册root用户密码，怎么登录root：
 https://zhidao.baidu.com/question/142163223.html
+dockers安装（阿里云镜像版）：
+https://www.cnblogs.com/walker-lin/p/11214127.html
+配置阿里云镜像：
+https://www.cnblogs.com/joyny/p/10486739.html
+https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
