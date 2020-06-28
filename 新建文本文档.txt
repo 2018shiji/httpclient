@@ -1,0 +1,2 @@
+Ubuntu安装时没注册root用户密码，怎么登录root：
+https://zhidao.baidu.com/question/142163223.html
