@@ -7,3 +7,6 @@ https://www.cnblogs.com/joyny/p/10486739.html
 https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
 
 https://cr.console.aliyun.com/repository/cn-hangzhou/2018shiji/helloworld/build
+
+基于Docker的前端项目集成方案：
+https://zhuanlan.zhihu.com/p/37961402?from_voters_page=true
