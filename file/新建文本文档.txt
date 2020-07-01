@@ -10,3 +10,7 @@ https://cr.console.aliyun.com/repository/cn-hangzhou/2018shiji/helloworld/build
 
 基于Docker的前端项目集成方案：
 https://zhuanlan.zhihu.com/p/37961402?from_voters_page=true
+
+jib使用小结：
+https://blog.csdn.net/boling_cavalry/article/details/100179709
+https://github.com/zq2599/blog_demos/tree/master/hellojib/src/main/java/com/bolingcavalry/hellojib
