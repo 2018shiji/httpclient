@@ -1,5 +1,5 @@
 #httpclient dockerfile
-FROM java:8
+FROM java:11
 #将当前目录下的jar包复制到docker容器的/目录下
 ADD httpclient-0.0.1-SNAPSHOT.jar /httpclient.jar
 #运行过程中创建一个httpclient.jar文件
