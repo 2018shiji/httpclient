@@ -187,4 +187,10 @@ public class Navigation {
         } catch (IOException e) { e.printStackTrace(); }
         return filePath;
     }
+
+    @RequestMapping("/test")
+    @ResponseBody
+    public String test(){
+        return "OK...";
+    }
 }
