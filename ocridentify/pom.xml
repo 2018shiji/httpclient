@@ -3,27 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.httpclient</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>com.httpclient</groupId>
-    <artifactId>httpclient</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>httpclient</name>
-    <description>httpclient project for Spring Boot</description>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>ocridentify</module>
-        <module>core</module>
-    </modules>
+    <groupId>com.httpclient</groupId>
+    <artifactId>ocridentify</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>ocridentify</name>
+    <description>ocr identify in httpclient</description>
 
     <properties>
-        <java.version>8</java.version>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
@@ -33,24 +26,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.httpclient</groupId>
+            <artifactId>core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -64,8 +42,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-    </dependencies>
 
+    </dependencies>
 
     <build>
         <plugins>
@@ -73,12 +51,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <classifier>exec</classifier>
+                    <!-- 指定该Main Class为全局的唯一入口 -->
+                    <mainClass>com.httpclient.ocridentify.OcridentifyApplication</mainClass>
+                    <layout>ZIP</layout>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-
 
 </project>
