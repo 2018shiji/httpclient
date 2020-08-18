@@ -46,7 +46,6 @@ public class HttpClientUtilBlock<T> {
         return result;
     }
 
-
 //    public ContainerFrontTail getContainerFrontTailPost(String remoteUrl, String base64Str, CloseableHttpClient httpClient) {
 //        HttpPost httpPost = new HttpPost(remoteUrl);
 //        StringEntity stringEntity =
