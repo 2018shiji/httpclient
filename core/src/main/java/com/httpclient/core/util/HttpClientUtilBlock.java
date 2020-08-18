@@ -15,6 +15,7 @@ import java.util.Calendar;
 public class HttpClientUtilBlock<T> {
     Class targetClass;
 
+
     public HttpClientUtilBlock<T> setTargetClass(Class targetClass){
         this.targetClass = targetClass;
         return this;
