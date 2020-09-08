@@ -76,6 +76,7 @@ public abstract class ContainerAbs implements IContainer {
         this.imageBase64Strings.clear();
         this.containerInfoStrings.clear();
         this.containerInfoRoofStrings.clear();
+
     }
 
 }
