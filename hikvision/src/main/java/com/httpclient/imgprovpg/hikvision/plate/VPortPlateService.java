@@ -4,6 +4,7 @@ import com.httpclient.imgprovpg.hikvision.pojo.VPortPlate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class VPortPlateService {
     @Autowired
