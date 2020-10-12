@@ -17,8 +17,7 @@ public class PlateRestClientUtil {
         if(vPortPlate == null){
             System.out.println("**********空结果集**********");
         }else {
-            System.out.println("plateId:" + vPortPlate.getPlateId() + ", plateNo:" + vPortPlate.getPlateNo()
-                    + ", ctime:" + vPortPlate.getCtime() + ", photoId:" + vPortPlate.getPhotos().get(0).getPhotoId());
+            System.out.println(vPortPlate);
         }
     }
 

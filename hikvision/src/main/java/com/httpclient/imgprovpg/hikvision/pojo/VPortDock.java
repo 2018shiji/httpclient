@@ -1,6 +1,7 @@
 package com.httpclient.imgprovpg.hikvision.pojo;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString
 @Table(name="v_port_cont_dock")
 public class VPortDock implements Serializable {
     private static final Long serialVersionUID = 5L;
