@@ -118,6 +118,7 @@ public class AsyncOrderedContainer extends ContainerAbs {
                 responseCalls.add(new ContainerThread(httpResponseFuture, countDownLatch));
             }
 
+
             List<Future<String>> futures = singleThreadExecutor.invokeAll(responseCalls, 60, TimeUnit.SECONDS);
             for(int i = 0; i < futures.size(); i++){
                 try {
