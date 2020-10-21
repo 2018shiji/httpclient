@@ -2,7 +2,6 @@ package com.httpclient.ocridentify;
 
 import com.httpclient.ocridentify.containerImp.AsyncOrderedContainer;
 import com.httpclient.ocridentify.containerImp.BlockedContainer;
-import com.httpclient.ocridentify.containerImp.MultiThreadedContainer;
 import com.httpclient.ocridentify.pojo.response.ContainerFrontTail;
 import com.httpclient.ocridentify.pojo.response.ContainerInfo;
 import com.httpclient.ocridentify.pojo.response.ContainerRoofInfo;
@@ -22,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-class OcridentifyApplicationTests {
+class OcrIdentifyApplicationTests {
 
     public static final String IMAGE_FILE_PATH = "C:\\Users\\Public\\Nwt\\cache\\recv\\毛骁\\识别图片";
     public static final String IMAGE_FILE_PATH_TEST = "C:\\Users\\lizhuangjie.chnet\\Desktop\\工作内容\\allpicture\\picture";
@@ -72,7 +71,7 @@ class OcridentifyApplicationTests {
     void containerFrontTailBlockT(){
         BlockedContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTailss(IMAGE_FILE_PATH_TEST);
+        List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTails(IMAGE_FILE_PATH_TEST);
         System.out.println(containerFrontTails == null ? "null":containerFrontTails.size());
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
@@ -150,19 +149,6 @@ class OcridentifyApplicationTests {
     }
 
     @Test
-    void threadPoolFrontTailMT() {
-        IContainer container = SpringUtil.getBean(MultiThreadedContainer.class);
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        ((MultiThreadedContainer)container).setExecutor(executorService);
-        long begin = System.currentTimeMillis();
-        List<ContainerFrontTail> containerFrontTails = container.getContainerFrontTails(IMAGE_FILE_PATH_TEST);
-        System.out.println(containerFrontTails == null ? "null":containerFrontTails.size());
-        long end = System.currentTimeMillis();
-        System.out.println("耗时：" + (end - begin)/1000.0 + "s");
-
-    }
-
-    @Test
     void test(){
         StringEntity stringEntity =
                 new StringEntity("111", ContentType.create("UTF-8"));
@@ -177,5 +163,7 @@ class OcridentifyApplicationTests {
         Logger logger = LoggerFactory.getLogger("Test");
         logger.info("11111111");
     }
+
+
 
 }

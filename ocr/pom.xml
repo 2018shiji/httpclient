@@ -48,6 +48,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -58,7 +63,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.httpclient.ocridentify.OcridentifyApplication</mainClass>
+                    <mainClass>com.httpclient.ocridentify.OcrIdentifyApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
             </plugin>

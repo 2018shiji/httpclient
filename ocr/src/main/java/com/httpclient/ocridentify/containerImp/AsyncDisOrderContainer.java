@@ -2,6 +2,7 @@ package com.httpclient.ocridentify.containerImp;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.httpclient.core.respHandler.CallbackHandler;
 import com.httpclient.ocridentify.pojo.response.ContainerFrontTail;
 import com.httpclient.ocridentify.pojo.response.ContainerInfo;
 import com.httpclient.ocridentify.pojo.response.ContainerRoofInfo;
@@ -18,17 +19,14 @@ public class AsyncDisOrderContainer extends ContainerAbs {
 
     private HttpClientUtilAsync asyncClient = new HttpClientUtilAsync();
 
-    /** 异步回调无序版，
-     * 当需要顺序时，
-     * 需client，server两端定义好序列号serialNumber以实现顺序
-     * */
+    /**异步回调无序版*/
     public List<ContainerFrontTail> getContainerFrontTails(String imageUri) {
         initContainer(imageUri);
-        sendRequestAsyncCallback("http://127.0.0.1:8082/doFrontTailPostJson");
-//        sendRequestAsync(CONTAINER_FRONT_TAIL);
+
+//        List<String> frontTailStrings = sendRequestWithAsyncDisOrder("http://127.0.0.1:8082/doFrontTailPostJson", imageBase64Strings);
 
         List<ContainerFrontTail> frontTails = new ArrayList<>();
-        List<String> frontTailStrings = asyncClient.getCallbackHandler().getResultStrings();
+        List<String> frontTailStrings = sendRequestWithAsyncDisOrder(CONTAINER_FRONT_TAIL, imageBase64Strings);
         try{
             for(int i = 0; i < frontTailStrings.size(); i++){
                 String resultStr = frontTailStrings.get(i);
@@ -43,10 +41,9 @@ public class AsyncDisOrderContainer extends ContainerAbs {
 
     public List<ContainerStatus> getContainerStatuses(String imageUri) {
         initContainer(imageUri);
-        sendRequestAsyncCallback(CONTAINER_STATUS);
 
         List<ContainerStatus> statuses = new ArrayList<>();
-        List<String> statusStrings = asyncClient.getCallbackHandler().getResultStrings();
+        List<String> statusStrings = sendRequestWithAsyncDisOrder(CONTAINER_STATUS, imageBase64Strings);
         try{
             for(int i = 0; i < statusStrings.size(); i++){
                 String resultStr = statusStrings.get(i);
@@ -61,10 +58,9 @@ public class AsyncDisOrderContainer extends ContainerAbs {
 
     public List<ContainerInfo> getContainerInfos(String imageUri) {
         initContainer(imageUri);
-        sendRequestAsyncCallback(CONTAINER_INFO);
 
         List<ContainerInfo> infos = new ArrayList<>();
-        List<String> infoStrings = asyncClient.getCallbackHandler().getResultStrings();
+        List<String> infoStrings = sendRequestWithAsyncDisOrder(CONTAINER_INFO, containerInfoStrings);
         try{
             for(int i = 0; i < infoStrings.size(); i++){
                 String resultStr = infoStrings.get(i);
@@ -79,10 +75,9 @@ public class AsyncDisOrderContainer extends ContainerAbs {
 
     public List<ContainerRoofInfo> getContainerRoofInfos(String imageUri) {
         initContainer(imageUri);
-        sendRequestAsyncCallback(CONTAINER_INFO);
 
         List<ContainerRoofInfo> roofInfos = new ArrayList<>();
-        List<String> roofInfoStrings = asyncClient.getCallbackHandler().getResultStrings();
+        List<String> roofInfoStrings = sendRequestWithAsyncDisOrder(CONTAINER_INFO, containerInfoRoofStrings);
         try{
             for(int i = 0; i < roofInfoStrings.size(); i++){
                 String resultStr = roofInfoStrings.get(i);
@@ -96,13 +91,18 @@ public class AsyncDisOrderContainer extends ContainerAbs {
     }
 
 
-    private void sendRequestAsyncCallback(String remoteUrl){
+    /**
+     * 异步非阻塞，调用后直接返回，返回结果以callBack进行回调，返回结果的顺序不一定与请求发起的顺序一致
+     */
+    private List<String> sendRequestWithAsyncDisOrder(String remoteUrl, List<String> requestStrings){
+        CallbackHandler callbackHandler = new CallbackHandler();
         try {
-            CountDownLatch countDownLatch = new CountDownLatch(imageBase64Strings.size());
+            CountDownLatch countDownLatch = new CountDownLatch(requestStrings.size());
+            callbackHandler.setCountDownLatch(countDownLatch);
             asyncClient.start();
-            for(int i = 0; i < imageBase64Strings.size(); i++) {
-                String imageStr = imageBase64Strings.get(i);
-                asyncClient.sendHttpRequestAsyncCallback(remoteUrl, imageStr, countDownLatch);
+            for(int i = 0; i < requestStrings.size(); i++) {
+                String imageStr = requestStrings.get(i);
+                asyncClient.sendHttpRequestWithCallback(remoteUrl, imageStr, callbackHandler);
             }
             countDownLatch.await();
         } catch (InterruptedException e) {
@@ -110,5 +110,6 @@ public class AsyncDisOrderContainer extends ContainerAbs {
         } finally {
             asyncClient.close();
         }
+        return callbackHandler.getResultStrings();
     }
 }

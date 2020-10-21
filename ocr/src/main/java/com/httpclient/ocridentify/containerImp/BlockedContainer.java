@@ -18,20 +18,40 @@ public class BlockedContainer<T> extends ContainerAbs {
     private HttpClientUtilBlock httpClientUtilBlock = new HttpClientUtilBlock();
 
     /** 一请求一响应完全阻塞版 **/
-    public List<ContainerFrontTail> getContainerFrontTailss(String imageUri){
-        return (List<ContainerFrontTail>) getResponseObjects(imageUri, imageBase64Strings, ContainerFrontTail.class);
+    public List<ContainerFrontTail> getContainerFrontTails(String imageUri){
+        List<ContainerFrontTail> containerFrontTails =
+                (List<ContainerFrontTail>) getResponseObjects(imageUri, imageBase64Strings, ContainerFrontTail.class);
+        for(int i = 0; i < containerFrontTails.size(); i++){
+            containerFrontTails.get(i).setFileName(fileNames.get(i));
+        }
+        return containerFrontTails;
     }
 
-    public List<ContainerStatus> getContainerStatusess(String imageUri){
-        return (List<ContainerStatus>) getResponseObjects(imageUri, imageBase64Strings, ContainerStatus.class);
+    public List<ContainerStatus> getContainerStatuses(String imageUri){
+        List<ContainerStatus> containerStatuses =
+                (List<ContainerStatus>) getResponseObjects(imageUri, imageBase64Strings, ContainerStatus.class);
+        for(int i = 0; i < containerStatuses.size(); i++){
+            containerStatuses.get(i).setFileName(fileNames.get(i));
+        }
+        return containerStatuses;
     }
 
-    public List<ContainerInfo> getContainerInfoss(String imageUri){
-        return (List<ContainerInfo>) getResponseObjects(imageUri, containerInfoStrings, ContainerInfo.class);
+    public List<ContainerInfo> getContainerInfos(String imageUri){
+        List<ContainerInfo> containerInfos =
+                (List<ContainerInfo>) getResponseObjects(imageUri, containerInfoStrings, ContainerInfo.class);
+        for(int i = 0; i < containerInfos.size(); i++){
+            containerInfos.get(i).setFileName(fileNames.get(i));
+        }
+        return containerInfos;
     }
 
-    public List<ContainerRoofInfo> getContainerRoofInfoss(String imageUri){
-        return (List<ContainerRoofInfo>) getResponseObjects(imageUri, containerInfoRoofStrings, ContainerRoofInfo.class);
+    public List<ContainerRoofInfo> getContainerRoofInfos(String imageUri){
+        List<ContainerRoofInfo> containerRoofInfos =
+                (List<ContainerRoofInfo>) getResponseObjects(imageUri, containerInfoRoofStrings, ContainerRoofInfo.class);
+        for(int i = 0; i < containerRoofInfos.size(); i++){
+            containerRoofInfos.get(i).setFileName(fileNames.get(i));
+        }
+        return containerRoofInfos;
     }
 
     private List<T> getResponseObjects(String imageUri, List<String> imageStrings, Class targetClass){
@@ -42,7 +62,7 @@ public class BlockedContainer<T> extends ContainerAbs {
         try{
             for(int i = 0; i < imageStrings.size(); i++){
                 String imageStr = imageStrings.get(i);
-                T responsePost = (T) httpClientUtilBlock.getResponsePost("http://127.0.0.1:8083/doFrontTailPostJson", imageStr, httpClient);
+                T responsePost = (T) httpClientUtilBlock.getPostResponse("http://127.0.0.1:8083/doFrontTailPostJson", imageStr, httpClient);
                 results.add(responsePost);
             }
         } finally {
@@ -51,99 +71,6 @@ public class BlockedContainer<T> extends ContainerAbs {
             } catch (IOException e) { e.printStackTrace();}
         }
 
-        return results;
-    }
-
-    /** 一请求一响应完全阻塞版 */
-    public List<ContainerFrontTail> getContainerFrontTails(String imageUri){
-        initContainer(imageUri);
-        List<ContainerFrontTail> results = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try{
-            for(int i = 0; i < imageBase64Strings.size(); i++) {
-                String imageStr = imageBase64Strings.get(i);
-                ContainerFrontTail frontTailPost = (ContainerFrontTail) httpClientUtilBlock.
-                        setTargetClass(ContainerFrontTail.class).getResponsePost("http://127.0.0.1:8082/doFrontTailPostJson", imageStr, httpClient);
-//                ContainerFrontTail frontTailPost = (ContainerFrontTail)httpClientUtilBlock.
-//                        setTargetClass(ContainerFrontTail.class).getResponsePost(CONTAINER_FRONT_TAIL, imageStr, httpClient);
-                String fileName = fileNames.get(i);
-                frontTailPost.setFileName(fileName);
-                results.add(frontTailPost);
-                logger.info(fileName + "------->" + frontTailPost.toString());
-
-            }
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) { e.printStackTrace();}
-        }
-
-        return results;
-    }
-
-    public List<ContainerStatus> getContainerStatuses(String imageUri){
-        initContainer(imageUri);
-        List<ContainerStatus> results = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try{
-            for(int i = 0; i < imageBase64Strings.size(); i++) {
-                String imageStr = imageBase64Strings.get(i);
-                ContainerStatus statusPost = (ContainerStatus) httpClientUtilBlock.
-                        setTargetClass(ContainerStatus.class).getResponsePost(CONTAINER_STATUS, imageStr, httpClient);
-                String fileName = fileNames.get(i);
-                statusPost.setFileName(fileName);
-                results.add(statusPost);
-                System.out.println(fileName + "------->" + statusPost.toString());
-            }
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) { e.printStackTrace();}
-        }
-        return results;
-    }
-
-    public List<ContainerInfo> getContainerInfos(String imageUri){
-        initContainer(imageUri);
-        List<ContainerInfo> results = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try{
-            for(int i = 0; i < containerInfoStrings.size(); i++) {
-                String infoStr = containerInfoStrings.get(i);
-                ContainerInfo infoPost = (ContainerInfo)httpClientUtilBlock
-                        .setTargetClass(ContainerInfo.class).getResponsePost(CONTAINER_INFO, infoStr, httpClient);
-                String fileName = fileNames.get(i);
-                infoPost.setFileName(fileName);
-                results.add(infoPost);
-                logger.info(fileName + "------->" + infoPost.toString());
-            }
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) { e.printStackTrace();}
-        }
-        return results;
-    }
-
-    public List<ContainerRoofInfo> getContainerRoofInfos(String imageUri){
-        initContainer(imageUri);
-        List<ContainerRoofInfo> results = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try{
-            for(int i = 0; i < containerInfoRoofStrings.size(); i++) {
-                String roofInfoStr = containerInfoRoofStrings.get(i);
-                ContainerRoofInfo roofInfoPost = (ContainerRoofInfo) httpClientUtilBlock
-                        .setTargetClass(ContainerRoofInfo.class).getResponsePost(CONTAINER_INFO, roofInfoStr, httpClient);
-                String fileName = fileNames.get(i);
-                roofInfoPost.setFileName(fileName);
-                results.add(roofInfoPost);
-                logger.info(fileName + "------->" + roofInfoPost.toString());
-            }
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) { e.printStackTrace();}
-        }
         return results;
     }
 

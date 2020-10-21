@@ -26,7 +26,7 @@ public class PostJsonEntityRH<T> implements ResponseHandler<T> {
             throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
         if(entity == null)
             throw new ClientProtocolException("Response contains no content");
-        String content = null;
+        String content;
         content = CharStreams.toString(new InputStreamReader(entity.getContent()));
         System.out.println(content);
         JSONObject jsonObject = JSON.parseObject(content);

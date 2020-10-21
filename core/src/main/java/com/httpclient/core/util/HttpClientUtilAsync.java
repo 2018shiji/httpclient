@@ -25,7 +25,6 @@ import java.util.concurrent.Future;
 @Component
 public class HttpClientUtilAsync {
     private CloseableHttpAsyncClient asyncClient;
-    @Getter private CallbackHandler callbackHandler = new CallbackHandler();
 
     private void initAsyncClient() throws IOReactorException               {
         RequestConfig requestConfig = RequestConfig.custom()
@@ -52,35 +51,30 @@ public class HttpClientUtilAsync {
 
     }
 
-    public Future<HttpResponse> sendHttpRequestAsyncCallback(String remoteUrl, String base64Str, CountDownLatch countDownLatch) {
-
-        Future<HttpResponse> responseFuture = null;
+    public void sendHttpRequestWithCallback(String remoteUrl, String requestBodyStr, CallbackHandler callbackHandler) {
 
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
-                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
+                new StringEntity(requestBodyStr, ContentType.create("application/json", "UTF-8"));
         httpPost.setEntity(stringEntity);
-
-        callbackHandler.setCountDownLatch(countDownLatch);
 
         long begin = System.currentTimeMillis();
         System.out.println("------------before execute------------" +
                 new SimpleDateFormat("HH:mm:ss:SSS").format(Calendar.getInstance().getTime()));
-        responseFuture = asyncClient.execute(httpPost, callbackHandler);
+        asyncClient.execute(httpPost, callbackHandler);
         System.out.println("------------after execute------------" + (System.currentTimeMillis() - begin) / 1000.0);
 
-        return responseFuture;
 
     }
 
-    public Future<HttpResponse> sendHttpRequestAsyncMultiThread(String remoteUrl, String base64Str) {
+    public Future<HttpResponse> sendHttpRequestWithFuture(String remoteUrl, String requestBodyStr) {
 
-        Future<HttpResponse> responseFuture = null;
+        Future<HttpResponse> responseFuture;
 
         HttpPost httpPost = new HttpPost(remoteUrl);
 
         StringEntity stringEntity =
-                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
+                new StringEntity(requestBodyStr, ContentType.create("application/json", "UTF-8"));
         httpPost.setEntity(stringEntity);
 
         long begin = System.currentTimeMillis();

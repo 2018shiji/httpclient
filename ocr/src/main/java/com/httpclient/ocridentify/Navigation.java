@@ -10,6 +10,8 @@ import com.httpclient.ocridentify.pojo.response.ContainerStatus;
 import com.httpclient.ocridentify.util.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,8 +57,8 @@ public class Navigation {
 
 
     @ResponseBody
-    @RequestMapping("get")
-    public String doGetFrontTails(String imageUri){
+    @RequestMapping("getFrontTailsTimed")
+    public ResponseEntity<String> doGetFrontTails(String imageUri){
         IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
         String filePath = formatImageUri(imageUri);
@@ -65,7 +67,7 @@ public class Navigation {
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
 
-        return JSON.toJSONString(result);
+        return new ResponseEntity<String>(JSON.toJSONString(result), HttpStatus.OK);
     }
 
     @ResponseBody

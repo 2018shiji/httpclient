@@ -13,22 +13,21 @@ import java.util.Calendar;
 
 @Component
 public class HttpClientUtilBlock<T> {
-    Class targetClass;
-
+    private Class targetClass;
 
     public HttpClientUtilBlock<T> setTargetClass(Class targetClass){
         this.targetClass = targetClass;
         return this;
     }
 
-    public T getResponsePost(String remoteUrl, String base64Str, CloseableHttpClient httpClient){
+    public T getPostResponse(String remoteUrl, String requestBodyStr, CloseableHttpClient httpClient){
         if(targetClass == null){
             System.out.println("!!!!!!! 请先设置好目标类型  !!!!!!!");
             return null;
         }
         HttpPost httpPost = new HttpPost(remoteUrl);
         StringEntity stringEntity =
-                new StringEntity(base64Str, ContentType.create("application/json", "UTF-8"));
+                new StringEntity(requestBodyStr, ContentType.create("application/json", "UTF-8"));
         httpPost.setEntity(stringEntity);
 
         PostJsonEntityRH<T> jsonEntityRH = new PostJsonEntityRH<>();

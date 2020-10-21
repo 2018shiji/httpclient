@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OcridentifyApplication {
+public class OcrIdentifyApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OcridentifyApplication.class, args);
+        SpringApplication.run(OcrIdentifyApplication.class, args);
     }
 
 }

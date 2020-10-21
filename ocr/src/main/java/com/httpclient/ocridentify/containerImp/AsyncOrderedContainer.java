@@ -21,12 +21,12 @@ import java.util.concurrent.*;
 public class AsyncOrderedContainer extends ContainerAbs {
     private HttpClientUtilAsync asyncClient = new HttpClientUtilAsync();
 
-    /** 异步线程池多任务提交版， 任务的提交顺序与Future列表存在顺序对应关系，故有序。*/
+    /** 异步提交有序版，任务的提交顺序与Future列表存在顺序对应关系，故有序。*/
     public List<ContainerFrontTail> getContainerFrontTails(String imageUri) {
         initContainer(imageUri);
         List<ContainerFrontTail> frontTails = new ArrayList<>();
-//        List<String> frontTailStrings = sendRequestAsyncMultiThread(CONTAINER_FRONT_TAIL, imageBase64Strings);
-        List<String> frontTailStrings = sendRequestAsyncMultiThread("http://127.0.0.1:8082/doFrontTailPostJson", imageBase64Strings);
+        List<String> frontTailStrings = sendRequestWithAsyncOrdered(CONTAINER_FRONT_TAIL, imageBase64Strings);
+//        List<String> frontTailStrings = sendRequestWithAsyncOrdered("http://127.0.0.1:8082/doFrontTailPostJson", imageBase64Strings);
         try{
             int j = 0;
             for(int i = 0; i < frontTailStrings.size(); i++){
@@ -46,7 +46,7 @@ public class AsyncOrderedContainer extends ContainerAbs {
 
     public List<ContainerStatus> getContainerStatuses(String imageUri){
         initContainer(imageUri);
-        List<String> statusStrings = sendRequestAsyncMultiThread(CONTAINER_STATUS, imageBase64Strings);
+        List<String> statusStrings = sendRequestWithAsyncOrdered(CONTAINER_STATUS, imageBase64Strings);
 
         List<ContainerStatus> statuses = new ArrayList<>();
         try{
@@ -68,7 +68,7 @@ public class AsyncOrderedContainer extends ContainerAbs {
     public List<ContainerInfo> getContainerInfos(String imageUri){
         initContainer(imageUri);
         List<ContainerInfo> infos = new ArrayList<>();
-        List<String> infoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoStrings);
+        List<String> infoStrings = sendRequestWithAsyncOrdered(CONTAINER_INFO, containerInfoStrings);
         try{
             for(int i = 0; i < infoStrings.size(); i++){
                 String resultStr = infoStrings.get(i);
@@ -88,7 +88,7 @@ public class AsyncOrderedContainer extends ContainerAbs {
     public List<ContainerRoofInfo> getContainerRoofInfos(String imageUri){
         initContainer(imageUri);
         List<ContainerRoofInfo> roofInfos = new ArrayList<>();
-        List<String> roofInfoStrings = sendRequestAsyncMultiThread(CONTAINER_INFO, containerInfoRoofStrings);
+        List<String> roofInfoStrings = sendRequestWithAsyncOrdered(CONTAINER_INFO, containerInfoRoofStrings);
         try{
             for(int i = 0; i < roofInfoStrings.size(); i++){
                 String resultStr = roofInfoStrings.get(i);
@@ -105,7 +105,12 @@ public class AsyncOrderedContainer extends ContainerAbs {
         return roofInfos;
     }
 
-    private List<String> sendRequestAsyncMultiThread(String remoteUrl, List<String> requestStrings){
+    /**
+     * 异步阻塞，调用后以耗费时间最久的请求作为整个请求集的响应时间
+     * 通过将请求发起时持有的Future按顺序存储，后续按集合中的Future的顺序进行响应结果的获取，
+     * 进而保证了请求与结果之间能够顺序的一一对应，即请求与响应结果是一一顺序对应的。
+     */
+    private List<String> sendRequestWithAsyncOrdered(String remoteUrl, List<String> requestStrings){
         List<String> results = new ArrayList<>();
         try {
             CountDownLatch countDownLatch = new CountDownLatch(requestStrings.size());
@@ -114,7 +119,7 @@ public class AsyncOrderedContainer extends ContainerAbs {
             List<Callable<String>> responseCalls = new ArrayList<>();
             for(int i = 0; i < requestStrings.size(); i++) {
                 String imageStr = requestStrings.get(i);
-                Future<HttpResponse> httpResponseFuture = asyncClient.sendHttpRequestAsyncMultiThread(remoteUrl, imageStr);
+                Future<HttpResponse> httpResponseFuture = asyncClient.sendHttpRequestWithFuture(remoteUrl, imageStr);
                 responseCalls.add(new ContainerThread(httpResponseFuture, countDownLatch));
             }
 
