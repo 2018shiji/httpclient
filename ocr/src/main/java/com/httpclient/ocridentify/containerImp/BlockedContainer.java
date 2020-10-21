@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -31,7 +32,7 @@ public class BlockedContainer<T> extends ContainerAbs {
         List<ContainerStatus> containerStatuses =
                 (List<ContainerStatus>) getResponseObjects(imageUri, imageBase64Strings, ContainerStatus.class);
         for(int i = 0; i < containerStatuses.size(); i++){
-            containerStatuses.get(i).setFileName(fileNames.get(i));
+//            containerStatuses.get(i).setFileName(fileNames.get(i));
         }
         return containerStatuses;
     }
@@ -54,7 +55,7 @@ public class BlockedContainer<T> extends ContainerAbs {
         return containerRoofInfos;
     }
 
-    private List<T> getResponseObjects(String imageUri, List<String> imageStrings, Class targetClass){
+    public List<T> getResponseObjects(String imageUri, List<String> imageStrings, Class targetClass){
         initContainer(imageUri);
         httpClientUtilBlock.setTargetClass(targetClass);
         List<T> results = new ArrayList<>();

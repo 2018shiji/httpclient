@@ -10,6 +10,7 @@ import com.httpclient.ocridentify.pojo.response.ContainerStatus;
 import com.httpclient.ocridentify.util.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,15 +25,17 @@ import java.util.List;
 
 @Controller
 public class Navigation {
+    @Autowired
+    BlockedContainer blockedContainer;
     Logger logger = LoggerFactory.getLogger(Navigation.class);
 
     @ResponseBody
     @RequestMapping("getStatuses")
     public String doGetStatuses(String imageUri){
-        IContainer container = SpringUtil.getBean(BlockedContainer.class);
+//        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
         String filePath = formatImageUri(imageUri);
-        List<ContainerStatus> statuses = container.getContainerStatuses(filePath);
+        List<ContainerStatus> statuses = blockedContainer.getContainerStatuses(filePath);
         long end = System.currentTimeMillis();
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
 
@@ -58,7 +61,7 @@ public class Navigation {
 
     @ResponseBody
     @RequestMapping("getFrontTailsTimed")
-    public ResponseEntity<String> doGetFrontTails(String imageUri){
+    public String doGetFrontTails(String imageUri){
         IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
         String filePath = formatImageUri(imageUri);
@@ -67,7 +70,7 @@ public class Navigation {
         System.out.println("耗时：" + (end - begin)/1000.0 + "s");
         System.out.println(JSON.toJSONString(result));
 
-        return new ResponseEntity<String>(JSON.toJSONString(result), HttpStatus.OK);
+        return JSON.toJSONString(result);
     }
 
     @ResponseBody
