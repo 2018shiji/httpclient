@@ -12,7 +12,7 @@ public class PlateRestClientUtil {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/port/plate/{id}";
         HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-        ResponseEntity<VPortPlate> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, VPortPlate.class, 21);
+        ResponseEntity<VPortPlate> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, VPortPlate.class, 110);
         VPortPlate vPortPlate = responseEntity.getBody();
         if(vPortPlate == null){
             System.out.println("**********空结果集**********");

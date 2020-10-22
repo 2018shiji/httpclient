@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%X{mock-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
+            <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
     </appender>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- This is the kafkaAppender -->
+    <appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%X{mock-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
+            <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
+        <topic>topic_http_client</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>
+                    if(mdc == null || mdc.get("servlet-message-id") == null)
+                        if(mdc.get("mock-message-id") == null)
+                            return false;
+                    return true;
+                </expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+        <!-- Optional parameter to use a fixed partition -->
+        <!-- <partition>0</partition> -->
+
+        <!-- Optional parameter to include log timestamps into the kafka message -->
+        <!-- <appendTimestamp>true</appendTimestamp> -->
+
+        <!-- each <producerConfig> translates to regular kafka-client config (format: key=value) -->
+        <!-- producer configs are documented here: https://kafka.apache.org/documentation.html#newproducerconfigs -->
+        <!-- bootstrap.servers is the only mandatory producerConfig -->
+        <producerConfig>bootstrap.servers=192.168.21.128:9092</producerConfig>
+
+        <!-- this is the fallback appender if kafka is not available. -->
+        <appender-ref ref="CONSOLE" />
     </appender>
 
     <!--设置为OFF,即屏蔽; 留下sqltiming作为INFO级别输出-->
@@ -23,10 +56,8 @@
 
     <!--设置日志打印级别为INFO-->
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILEINFO"/>
-        <appender-ref ref="FILEWARN"/>
-        <appender-ref ref="FILEERROR"/>
+        <appender-ref ref="kafkaAppender"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

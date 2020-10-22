@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.*;
 public class OcrIdentityAppWebTest {
     @Autowired
     Navigation navigation;
-    //BlockedContainer------>fileName did not initialized
+    //BlockedContainer -------->exception(out of array) ------>fileName did not initialized
 //    @SpyBean
 //    BlockedContainer blockedContainerSpy;
 
