@@ -2,8 +2,6 @@ package com.httpclient.ocridentify.containerImp;
 
 import com.alibaba.fastjson.JSON;
 import com.httpclient.core.interact.ImgProvider;
-import com.httpclient.imgprovpg.hikvision.interact.ImgProvDefault;
-import com.httpclient.imgprovpg.hikvision.interact.ImgProvHikVision;
 import com.httpclient.ocridentify.IContainer;
 import com.httpclient.ocridentify.pojo.request.ImagePojo;
 import com.httpclient.ocridentify.pojo.request.InfoPojo;
@@ -22,7 +20,12 @@ import java.util.*;
 
 @Component
 public abstract class ContainerAbs implements IContainer {
-    ImgProvider imgProvider = new ImgProvDefault();
+    ImgProvider imgProvider = new ImgProvider() {
+        @Override
+        public List<File> getImgFiles(String imgUri) {
+            return new ArrayList<>();
+        }
+    };
 
     protected List<String> imageBase64Strings = new ArrayList<>();
     protected List<String> containerInfoStrings = new ArrayList<String>();

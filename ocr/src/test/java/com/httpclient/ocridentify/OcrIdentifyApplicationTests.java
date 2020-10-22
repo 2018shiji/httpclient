@@ -13,6 +13,7 @@ import org.apache.http.entity.StringEntity;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -158,12 +159,12 @@ class OcrIdentifyApplicationTests {
 
     }
 
+    Logger logger = LoggerFactory.getLogger("Test");
     @Test
     void log(){
-        Logger logger = LoggerFactory.getLogger("Test");
+        MDC.put("mock-message-id", "mock-message-id");
         logger.info("11111111");
+        MDC.remove("mock-message-id");
     }
-
-
 
 }

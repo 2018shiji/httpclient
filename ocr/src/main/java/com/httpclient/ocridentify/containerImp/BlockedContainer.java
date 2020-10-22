@@ -32,7 +32,7 @@ public class BlockedContainer<T> extends ContainerAbs {
         List<ContainerStatus> containerStatuses =
                 (List<ContainerStatus>) getResponseObjects(imageUri, imageBase64Strings, ContainerStatus.class);
         for(int i = 0; i < containerStatuses.size(); i++){
-//            containerStatuses.get(i).setFileName(fileNames.get(i));
+            containerStatuses.get(i).setFileName(fileNames.get(i));
         }
         return containerStatuses;
     }
@@ -55,7 +55,7 @@ public class BlockedContainer<T> extends ContainerAbs {
         return containerRoofInfos;
     }
 
-    public List<T> getResponseObjects(String imageUri, List<String> imageStrings, Class targetClass){
+    private List<T> getResponseObjects(String imageUri, List<String> imageStrings, Class targetClass){
         initContainer(imageUri);
         httpClientUtilBlock.setTargetClass(targetClass);
         List<T> results = new ArrayList<>();

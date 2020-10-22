@@ -32,12 +32,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.httpclient.imgProvPG</groupId>
-            <artifactId>hikvision</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -61,11 +55,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.httpclient.ocridentify.OcrIdentifyApplication</mainClass>
-                    <layout>ZIP</layout>
-                </configuration>
             </plugin>
         </plugins>
     </build>

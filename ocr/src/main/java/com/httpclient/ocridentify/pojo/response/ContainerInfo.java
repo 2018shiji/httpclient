@@ -1,11 +1,15 @@
 package com.httpclient.ocridentify.pojo.response;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ContainerInfo {
     @JSONField(name = "container_num")
     private String containerNum;

@@ -25,23 +25,22 @@ import java.util.List;
 
 @Controller
 public class Navigation {
-    @Autowired
-    BlockedContainer blockedContainer;
     Logger logger = LoggerFactory.getLogger(Navigation.class);
 
     @ResponseBody
     @RequestMapping("getStatuses")
     public String doGetStatuses(String imageUri){
-//        IContainer container = SpringUtil.getBean(BlockedContainer.class);
+        IContainer container = SpringUtil.getBean(BlockedContainer.class);
         long begin = System.currentTimeMillis();
         String filePath = formatImageUri(imageUri);
-        List<ContainerStatus> statuses = blockedContainer.getContainerStatuses(filePath);
+        List<ContainerStatus> statuses = container.getContainerStatuses(filePath);
         long end = System.currentTimeMillis();
-        System.out.println("耗时：" + (end - begin)/1000.0 + "s");
+        String result = JSON.toJSONString(statuses);
 
-        System.out.println(JSON.toJSONString(statuses));
+        System.out.println("耗时：" + (end - begin)/1000.0 + "s" + "\n" + "result: " + result);
+        logger.info("cost time：" + (end - begin)/1000.0 + "s" + "\n" + "result: " + result);
 
-        return JSON.toJSONString(statuses);
+        return result;
     }
 
     @ResponseBody

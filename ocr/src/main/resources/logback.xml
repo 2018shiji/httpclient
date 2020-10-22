@@ -3,7 +3,7 @@
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%X{mock-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
             <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
     </appender>
@@ -11,7 +11,7 @@
     <!-- This is the kafkaAppender -->
     <appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{servlet-message-id}] [%X{mock-message-id}] [%thread] %-5level %logger - %msg%n</pattern>
             <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
         <topic>topic_http_client</topic>
@@ -22,7 +22,8 @@
             <evaluator>
                 <expression>
                     if(mdc == null || mdc.get("servlet-message-id") == null)
-                        return false;
+                        if(mdc.get("mock-message-id") == null)
+                            return false;
                     return true;
                 </expression>
             </evaluator>
@@ -43,14 +44,6 @@
         <!-- this is the fallback appender if kafka is not available. -->
         <appender-ref ref="CONSOLE" />
     </appender>
-
-    <!--设置为OFF,即屏蔽; 留下sqltiming作为INFO级别输出-->
-    <logger name="jdbc.connection" level="OFF"/>
-    <logger name="jdbc.resultset" level="OFF"/>
-    <logger name="jdbc.resultsettable" level="OFF"/>
-    <logger name="jdbc.audit" level="OFF"/>
-    <logger name="jdbc.sqltiming" level="INFO"/>
-    <logger name="jdbc.sqlonly" level="OFF"/>
 
     <!--设置日志打印级别为INFO-->
     <root level="INFO">
