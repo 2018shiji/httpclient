@@ -2,14 +2,12 @@ package com.httpclient.ocridentify.containerImp;
 
 import com.alibaba.fastjson.JSON;
 import com.httpclient.ocridentify.IContainer;
+import com.httpclient.ocridentify.merge.ConstantUtil;
 import com.httpclient.ocridentify.pojo.request.ImagePojo;
 import com.httpclient.ocridentify.pojo.request.InfoPojo;
 import com.google.common.io.Files;
-import com.httpclient.core.util.ConstantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

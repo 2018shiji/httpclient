@@ -1,6 +1,5 @@
-package com.httpclient.core.util;
+package com.httpclient.ocridentify.merge;
 
-import com.httpclient.core.respHandler.PostJsonEntityRH;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;

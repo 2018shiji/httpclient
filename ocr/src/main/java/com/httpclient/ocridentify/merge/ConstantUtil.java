@@ -1,10 +1,10 @@
-package com.httpclient.core.util;
+package com.httpclient.ocridentify.merge;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class ConstantUtil {
+public class ConstantUtil {
     public static Set<String> imageFormats(){
         Set<String> imageFormats = new HashSet<>();
         imageFormats.add("png");

@@ -1,4 +1,4 @@
-package com.httpclient.core.respHandler;
+package com.httpclient.ocridentify.merge;
 
 import com.google.common.io.CharStreams;
 import lombok.Getter;

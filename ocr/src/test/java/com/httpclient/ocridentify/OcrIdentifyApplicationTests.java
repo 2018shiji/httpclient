@@ -1,6 +1,8 @@
 package com.httpclient.ocridentify;
 
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.io.CharStreams;
 import com.httpclient.ocridentify.containerImp.AsyncOrderedContainer;
 import com.httpclient.ocridentify.containerImp.BlockedContainer;
 import com.httpclient.ocridentify.pojo.response.ContainerFrontTail;
@@ -9,8 +11,14 @@ import com.httpclient.ocridentify.pojo.response.ContainerRoofInfo;
 import com.httpclient.ocridentify.pojo.response.ContainerStatus;
 import com.httpclient.ocridentify.util.HttpClientUtilTest;
 import com.httpclient.ocridentify.util.SpringUtil;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +26,12 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

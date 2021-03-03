@@ -1,7 +1,5 @@
-package com.httpclient.core.util;
+package com.httpclient.ocridentify.merge;
 
-import com.httpclient.core.respHandler.CallbackHandler;
-import lombok.Getter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
 @Component

@@ -2,12 +2,12 @@ package com.httpclient.ocridentify.containerImp;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.httpclient.ocridentify.merge.HttpClientUtilAsync;
 import com.httpclient.ocridentify.pojo.response.ContainerFrontTail;
 import com.httpclient.ocridentify.pojo.response.ContainerInfo;
 import com.httpclient.ocridentify.pojo.response.ContainerRoofInfo;
 import com.httpclient.ocridentify.pojo.response.ContainerStatus;
 import com.google.common.io.CharStreams;
-import com.httpclient.core.util.HttpClientUtilAsync;
 import org.apache.http.HttpResponse;
 import org.springframework.stereotype.Component;
 
