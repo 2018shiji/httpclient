@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
 public class HttpClientUtilAsync {
     private CloseableHttpAsyncClient asyncClient;
 
-    private void initAsyncClient() throws IOReactorException               {
+    private void initAsyncClient() throws IOReactorException {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(60000)
                 .setSocketTimeout(30000)
@@ -63,7 +63,6 @@ public class HttpClientUtilAsync {
                 new SimpleDateFormat("HH:mm:ss:SSS").format(Calendar.getInstance().getTime()));
         asyncClient.execute(httpPost, callbackHandler);
         System.out.println("------------after execute------------" + (System.currentTimeMillis() - begin) / 1000.0);
-
 
     }
 

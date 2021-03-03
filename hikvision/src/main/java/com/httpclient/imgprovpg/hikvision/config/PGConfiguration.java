@@ -1,4 +1,4 @@
-package com.httpclient.imgprovpg.hikvision;
+package com.httpclient.imgprovpg.hikvision.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
