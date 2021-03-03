@@ -20,9 +20,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-/**
+ /**
  * httpClient util: version(4.5.10)
- *
  */
 @Component
 public class HttpClientUtilTest {

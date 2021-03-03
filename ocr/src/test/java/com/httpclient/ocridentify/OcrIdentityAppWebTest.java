@@ -43,7 +43,6 @@ public class OcrIdentityAppWebTest {
 //        System.out.println("------------->" + result);
 //    }
 
-
     @MockBean
     BlockedContainer blockedContainerMock;
 

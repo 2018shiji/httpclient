@@ -1,7 +1,6 @@
 package com.httpclient.ocridentify.containerImp;
 
 import com.alibaba.fastjson.JSON;
-import com.httpclient.core.interact.ImgProvider;
 import com.httpclient.ocridentify.IContainer;
 import com.httpclient.ocridentify.pojo.request.ImagePojo;
 import com.httpclient.ocridentify.pojo.request.InfoPojo;

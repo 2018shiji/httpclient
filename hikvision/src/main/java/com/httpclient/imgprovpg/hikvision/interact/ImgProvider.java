@@ -1,4 +1,4 @@
-package com.httpclient.core.interact;
+package com.httpclient.imgprovpg.hikvision.interact;
 
 import org.springframework.stereotype.Component;
 

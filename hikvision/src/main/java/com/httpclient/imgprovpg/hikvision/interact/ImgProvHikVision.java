@@ -1,6 +1,5 @@
 package com.httpclient.imgprovpg.hikvision.interact;
 
-import com.httpclient.core.interact.ImgProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
